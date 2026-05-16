@@ -70,4 +70,4 @@ async function search(query) {
     }
 }
 
-search("daily temperatures");
+search("explain segment tree");
