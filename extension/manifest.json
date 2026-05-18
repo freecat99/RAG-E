@@ -1,13 +1,14 @@
 {
   "manifest_version": 3,
 
-  "name": "Co-worker",
+  "name": "Coworker",
 
   "version": "1.0.0",
 
   "description": "Helps you learn concepts of data structures and algorithms on the go!",
 
   "permissions": [
+    "sidePanel",
     "activeTab",
     "storage",
     "scripting"
@@ -42,7 +43,7 @@
 
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Co-worker"
+    "default_title": "Coworker"
   },
   
    "icons": {

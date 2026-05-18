@@ -1,4 +1,4 @@
-console.log("DSA Help Loaded");
+console.log("Coworker Loaded");
 
 let sidebarOpen = false;
 

@@ -1,3 +1,3 @@
 chrome.runtime.onInstalled.addListener(() => {
-    console.log("Co-worker Extension Installed");
+    console.log("Coworker Extension Installed");
 });
