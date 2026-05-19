@@ -3,10 +3,10 @@ import React from 'react'
 function Overview() {
   return (
     <div className='midOverview'>
-      <ol className='midList'>
+      <ul className='midList'>
         <li className='midListItem'>
             <p className="listItemHeading">Approach</p> <br></br>
-            <div className="midListItemPara">
+            <div className="midPara">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias officiis quod consectetur, maxime atque officia ex debitis eos blanditiis quae.
             </div>
         </li>
@@ -41,7 +41,10 @@ function Overview() {
                 </div>
             </div>
         </li>
-      </ol>
+      </ul>
+      <div className="midAI">
+        <button className="askAi">Ask AI</button>
+      </div>
     </div>
   )
 }

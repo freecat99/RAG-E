@@ -7,6 +7,14 @@
     url("./fonts/Satoshi-Variable.woff") format("woff"),
     url("./fonts/Satoshi-VariableItalic.woff") format("woff");
 }
+:root{
+  --theme-purple: #39208b;
+  --theme-blue: #203392;
+  --text-purple: #8f7dcc;
+  --text-blue: #2c42ac;
+  --text-white: #f2f2f5;
+  --text-black: #0e0b1a;
+}
 
 *{
   margin: 0;
@@ -17,25 +25,127 @@
 
 }
 
+.homepage{
+  background-color: #1c172c;
+  color: var(--text-white);
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+
+}
+
 .top{
   display: flex;
   gap: .8rem;
   padding: 10px;
+
+  background: linear-gradient(to bottom, #4d3d7c, #30235a);
+
+  border-bottom: 2px solid var(--text-black);
+  color: var(--text-white);
 }
 
 .topTitleCard{
   font-weight: 800;
   font-size: 1.3rem;
   cursor: pointer;
+  margin: 10px;
 }
 
 .mid{
-  margin: 10px;
-  padding: 10px;
+  padding: 20px;
+  
+  flex-grow: 1;
+  
+  background-color: var(--text-black);
+}
+.midListItem{
+  margin: 0 0 20px 0;
+}
+
+.midListItem::marker{
+  color: transparent;
 }
 
 .listItemHeading{
   font-weight: 600;
   font-size: 1.2rem;
-  color: red;
+  font-weight: 700;
+  color: var(--text-purple);
+}
+
+.midPara, .midConcepts, .midQuestions {
+  font-weight: 100;
+  font-size: 1.1rem;
+  padding: 15px;
+  border-radius: 20px;
+  background-color: #f7f7f715;
+}
+
+
+.midComplexity{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  height: max-content;
+}
+
+.midSpaceComplexity, .midTimeComplexity{
+  width: 100%;
+  margin: 0 5px;
+  background-color: #ffffff1f;
+  height: fit-content; 
+  padding: 10px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+
+}
+
+.midComplexityValue{
+  margin: 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.midTimeComplexity .midComplexityValue{
+  color: rgb(86, 226, 86);
+}
+
+.midSpaceComplexity .midComplexityValue{
+  color: rgb(124, 188, 240);
+}
+
+.midAI button{
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 5px;
+  padding: 20px;
+  width: 40%;
+  font-size: 1.5rem;
+  border-radius: 20px;
+  background-color: var(--theme-purple);
+  color: var(--text-white);  
+}
+
+
+
+
+
+.low{
+
+  font-size: .8rem;
+  font-weight: 100;
+  color: #ffffffea;
+
+  padding: 10px;
+  
 }

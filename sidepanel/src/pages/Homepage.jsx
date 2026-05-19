@@ -12,7 +12,9 @@ function Homepage() {
         <div className="mid">
             <Overview/>
         </div>
-        <div className="low"></div>
+        <div className="low">
+          <p className="discretion">AI can make mistakes. Use responsibly.</p>
+        </div>
     </div>
   )
 }
