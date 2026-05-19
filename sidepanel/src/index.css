@@ -84,6 +84,9 @@
   background-color: #f7f7f715;
 }
 
+.midQuestions li::marker{
+  color: transparent;
+} 
 
 .midComplexity{
   display: flex;

@@ -9,10 +9,13 @@
 
   "permissions": [
     "sidePanel",
-    "activeTab",
     "storage",
     "scripting"
   ],
+
+  "side_panel":{
+    "default_path": "./sidebar/sidebar.html "
+  },
 
   "host_permissions": [
     "https://leetcode.com/*",
@@ -32,18 +35,13 @@
       "js": [
         "content.js"
       ],
-
-      "css": [
-        "styles.css"
-      ],
-
+      
       "run_at": "document_idle"
     }
   ],
 
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "Coworker"
+    "default_title": "Launch Coworker"
   },
   
    "icons": {
