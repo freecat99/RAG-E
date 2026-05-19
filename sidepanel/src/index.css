@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "Satoshi";
+  src:
+    url("./fonts/Satoshi-Regular.woff") format("woff"),  
+    url("./fonts/Satoshi-Bold.woff") format("woff"),  
+    url("./fonts/Satoshi-Light.woff") format("woff"),  
+    url("./fonts/Satoshi-Variable.woff") format("woff"),
+    url("./fonts/Satoshi-VariableItalic.woff") format("woff");
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  font-family: Satoshi, 'Arial', sans-serif;
+
+}
+
+.top{
+  display: flex;
+  gap: .8rem;
+  padding: 10px;
+}
+
+.topTitleCard{
+  font-weight: 800;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.mid{
+  margin: 10px;
+  padding: 10px;
+}
+
+.listItemHeading{
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: red;
+}
