@@ -1,3 +1,4 @@
 /node_modules
 .env
 /sidepanel/node_modules
+/backend/node_modules

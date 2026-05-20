@@ -2,11 +2,21 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { pipeline } from "@xenova/transformers";
-import { client } from "./qdrantClient.js";
+import { client } from "../data/qdrantClient.js";
+import { deepseekAsk } from "../util/openRouter.js";
 
 const COLLECTION_NAME = "algorithms";
 
-async function search(query) {
+//prepares hypothetical answer for better search
+const hyde = async(query) => {
+    let hydeQuery = await deepseekAsk(query);
+
+    return hydeQuery;
+} 
+
+export async function searchVectorDB(query) {
+
+    let hydeQuery = await hyde(query);
 
     // load embedding model
     const extractor = await pipeline(
@@ -16,7 +26,7 @@ async function search(query) {
 
     // Some recent models that you can find in MTEB require prepending the text with an instruction to work better for retrieval. For example, if you use BAAI/bge-large-en-v1.5, you should prefix your query with the following instruction: “Represent this sentence for searching relevant passages:”
 
-    const formattedQuery = "Represent this sentence for searching relevant passages: " + query;
+    const formattedQuery = "Represent this sentence for searching relevant passages: " + hydeQuery;
 
     // generate query embedding
     const output = await extractor(
@@ -30,7 +40,7 @@ async function search(query) {
     const queryEmbedding =
         Array.from(output.data);
 
-    // search Qdrant
+    // searchVectorDB Qdrant
     const results = await client.search(
         COLLECTION_NAME,
         {
@@ -70,4 +80,4 @@ async function search(query) {
     }
 }
 
-search("explain segment tree");
+searchVectorDB("daily temperatures");

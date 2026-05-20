@@ -39,8 +39,9 @@
 .top{
   display: flex;
   gap: .8rem;
-  padding: 10px;
-
+  padding: 5px 5px 1px 5px;
+  align-items:flex-end;
+  border: 1px solid red;
   background: linear-gradient(to bottom, #4d3d7c, #30235a);
 
   border-bottom: 2px solid var(--text-black);
@@ -51,7 +52,11 @@
   font-weight: 800;
   font-size: 1.3rem;
   cursor: pointer;
-  margin: 10px;
+  margin: 10px 10px 0 10px;
+}
+
+.active{
+  border-bottom: 2px solid rgba(255, 255, 255, 0.466);
 }
 
 .mid{
@@ -132,16 +137,20 @@
   cursor: pointer;
   margin: 5px;
   padding: 20px;
-  width: 40%;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   border-radius: 20px;
   background-color: var(--theme-purple);
   color: var(--text-white);  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  transition: all .1s ease-in;
 }
 
-
-
-
+.midAI button:hover{
+  background-color: #49309c;
+}
 
 .low{
 

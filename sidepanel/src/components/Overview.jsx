@@ -1,4 +1,5 @@
 import React from 'react'
+import {MessagesSquare } from 'lucide-react'
 
 function Overview() {
   return (
@@ -43,7 +44,7 @@ function Overview() {
         </li>
       </ul>
       <div className="midAI">
-        <button className="askAi">Ask AI</button>
+        <button className="askAi"> <MessagesSquare/> Ask AI</button>
       </div>
     </div>
   )

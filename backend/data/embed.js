@@ -9,7 +9,6 @@ const client = new QdrantClient({
     url: process.env.QdrantURL,
     apiKey: process.env.QdrantAPI
 })
-//console.log(client)
 
 const collectionName = "algorithms"
 
