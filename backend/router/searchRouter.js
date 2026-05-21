@@ -1,7 +1,7 @@
 import express from 'express'
-import { search, searchVectorDB } from '../controller/searchController';
+import { llmAnswer } from '../controller/searchController';
 
 export const searchRouter = express.Router();
 
-searchRouter.get('/', searchVectorDB)
+searchRouter.get('/', llmAnswer)
 

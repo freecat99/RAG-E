@@ -61,20 +61,39 @@ export async function searchVectorDB(query) {
     return knowledge;
 }
 
-export const llmAnswer = async(question) => {
+const sanitize = (text) => {
+
+    return text
+        // remove extra spaces
+        .replace(/\s+/g, " ")
+
+        // remove HTML tags
+        .replace(/<[^>]*>/g, "")
+
+        // trim edges
+        .trim()
+
+        // limit length
+        .slice(0, 1000);
+}
+
+export const llmAnswer = async(req, res) => {
 
     try {
+
+        let question = req.body.question;
+        question = sanitize(question);
         
         //retrieve knowledge from vector DB using HyDE
         const knowledge = await searchVectorDB(question);
 
         //generate answer
         const answer = await llmGen(question, knowledge);
-        return answer;
+        return res.status(200).json(answer);
         
     } catch (error) {
         console.log('error in llmAnswer', error);
+        return res.status(404).json("Trouble generating answer");
     }
 }
 
-llmAnswer("Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0 instead")
