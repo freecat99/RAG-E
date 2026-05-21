@@ -3,13 +3,13 @@ dotenv.config();
 
 import { pipeline } from "@xenova/transformers";
 import { client } from "../data/qdrantClient.js";
-import { deepseekAsk } from "../util/openRouter.js";
+import { llmGen, llmHyde } from "../util/openRouter.js";
 
 const COLLECTION_NAME = "algorithms";
 
 //prepares hypothetical answer for better search
 const hyde = async(query) => {
-    let hydeQuery = await deepseekAsk(query);
+    let hydeQuery = await llmHyde(query);
 
     return hydeQuery;
 } 
@@ -17,6 +17,7 @@ const hyde = async(query) => {
 export async function searchVectorDB(query) {
 
     let hydeQuery = await hyde(query);
+    console.log('hyde', hydeQuery)
 
     // load embedding model
     const extractor = await pipeline(
@@ -25,7 +26,6 @@ export async function searchVectorDB(query) {
     );
 
     // Some recent models that you can find in MTEB require prepending the text with an instruction to work better for retrieval. For example, if you use BAAI/bge-large-en-v1.5, you should prefix your query with the following instruction: “Represent this sentence for searching relevant passages:”
-
     const formattedQuery = "Represent this sentence for searching relevant passages: " + hydeQuery;
 
     // generate query embedding
@@ -45,39 +45,36 @@ export async function searchVectorDB(query) {
         COLLECTION_NAME,
         {
             vector: queryEmbedding,
-            limit: 5
+            limit: 3
         }
     );
 
-    console.log("\nRESULTS:\n");
+    let knowledge =
+    results.map((result) => {
+        return `
+                TITLE: ${result.payload.title},
+                KEYWORDS: ${result.payload.keywords.join(',')},
+                THEORY: ${result.payload.theory.slice(0, 300)}
+                `
+    }).join('\n\n');
 
-    for (const result of results) {
+    return knowledge;
+}
 
-        console.log(
-            "=================================="
-        );
+export const llmAnswer = async(question) => {
 
-        console.log(
-            "TITLE:",
-            result.payload.title
-        );
+    try {
+        
+        //retrieve knowledge from vector DB using HyDE
+        const knowledge = await searchVectorDB(question);
 
-        console.log(
-            "SCORE:",
-            result.score
-        );
-
-        console.log(
-            "KEYWORDS:",
-            result.payload.keywords
-        );
-
-        console.log(
-            "THEORY:",
-            result.payload.theory
-                ?.slice(0, 300)
-        );
+        //generate answer
+        const answer = await llmGen(question, knowledge);
+        return answer;
+        
+    } catch (error) {
+        console.log('error in llmAnswer', error);
     }
 }
 
-searchVectorDB("daily temperatures");
+llmAnswer("Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0 instead")
