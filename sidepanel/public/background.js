@@ -1,36 +1,30 @@
-chrome.runtime.onInstalled.addListener(() => {
-    console.log("Coworker Extension Installed");
+chrome.action.onClicked.addListener((tab) => {
+  chrome.sidePanel.open({ windowId: tab.windowId });
 });
-
-chrome.sidePanel
-  .setPanelBehavior({
-    openPanelOnActionClick: true
-  })
-  .catch((error) => console.error(error));
-
-chrome.tabs.onUpdated.addListener(
-  async (tabId, info, tab) => {
-
-    if (!tab.url) return;
-
-    const url = new URL(tab.url);
-
-    if (
-      url.origin ===
-      "https://leetcode.com"
-    ) {
-
-      await chrome.sidePanel.setOptions({
-        tabId,
-        path: "index.html",
-        enabled: true
-      });
-
-    } else {
-
-      await chrome.sidePanel.setOptions({
-        tabId,
-        enabled: false
-      });
-    }
+ 
+// enable the icon only on LeetCode
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status !== "complete") return;
+ 
+  const isLeetCode = tab.url?.includes("leetcode.com");
+ 
+  if (isLeetCode) {
+    chrome.action.enable(tabId);
+    chrome.action.setTitle({ tabId, title: "Open Coworker" });
+  } else {
+    chrome.action.disable(tabId);
+    chrome.action.setTitle({ tabId, title: "Coworker — visit LeetCode to use" });
+  }
 });
+ 
+// relay messages between content script and sidebar
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "PROBLEM_DATA") {
+    // store the latest problem so sidebar can fetch it on load
+    chrome.storage.local.set({ currentProblem: message.payload }, () => {
+      sendResponse({ ok: true });
+    });
+    return true; // keep channel open for async sendResponse
+  }
+});
+ 

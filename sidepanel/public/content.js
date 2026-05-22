@@ -1,100 +1,70 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+// Coworker — content script
+// Runs on every LeetCode page, scrapes problem info and sends it to the extension
 
-import App from "./App";
-import styles from "./index.css?inline";
+(function () {
+  let lastSentSlug = null;
 
-console.log("Coworker Loaded");
+  function scrapeProblem() {
+    // title
+    const titleEl =
+      document.querySelector('[data-cy="question-title"]') ||
+      document.querySelector(".text-title-large a") ||
+      document.querySelector("h4.mr-2");
+    const title = titleEl?.textContent?.trim() ?? null;
 
-let sidebarOpen = false;
+    // slug from URL  e.g. /problems/two-sum/
+    const slugMatch = window.location.pathname.match(/\/problems\/([\w-]+)/);
+    const slug = slugMatch ? slugMatch[1] : null;
 
-// ---------- ROOT ----------
-const root = document.createElement("div");
+    // difficulty badge
+    const diffEl = document.querySelector('[diff]') ||
+      document.querySelector(".text-difficulty-easy, .text-difficulty-medium, .text-difficulty-hard");
+    const difficulty = diffEl?.textContent?.trim() ?? null;
 
-root.id = "coworker-root";
+    // problem description (markdown rendered as HTML)
+    const descEl =
+      document.querySelector(".question-content__JfgR") ||
+      document.querySelector("[data-track-load='description_content']") ||
+      document.querySelector(".elfjS");
+    const description = descEl?.innerText?.trim() ?? null;
 
-document.body.appendChild(root);
+    // code editor content (Monaco)
+    const codeLines = document.querySelectorAll(".view-line");
+    const code = codeLines.length
+      ? Array.from(codeLines).map((l) => l.textContent).join("\n").trim()
+      : null;
 
-// ---------- SHADOW ROOT ----------
-const shadowRoot = root.attachShadow({
-  mode: "open",
-});
+    // selected language
+    const langEl =
+      document.querySelector(".ant-select-selection-item") ||
+      document.querySelector("[data-cy='lang-select'] .ant-select-selection-item");
+    const language = langEl?.textContent?.trim() ?? null;
 
-// ---------- STYLE ----------
-const styleTag = document.createElement("style");
-
-styleTag.textContent = styles;
-
-shadowRoot.appendChild(styleTag);
-
-// ---------- REACT ROOT ----------
-const reactRoot = document.createElement("div");
-
-reactRoot.id = "react-root";
-
-shadowRoot.appendChild(reactRoot);
-
-// ---------- RENDER APP ----------
-ReactDOM.createRoot(reactRoot).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// ---------- SCRAPER ----------
-function scrapeProblem() {
-  const title =
-    document.querySelector(
-      "div.text-title-large"
-    )?.innerText;
-
-  const desc =
-    document.querySelector(
-      '[data-track-load="description_content"]'
-    )?.innerText;
-
-  return {
-    title,
-    desc,
-  };
-}
-
-// ---------- TOGGLE ----------
-chrome.runtime.onMessage.addListener(
-  (message) => {
-
-    if (
-      message.action ===
-      "toggle_sidebar"
-    ) {
-
-      sidebarOpen =
-      !sidebarOpen;
-
-      reactRoot.style.right =
-      sidebarOpen
-        ? "0"
-        : "-420px";
-    }
+    return { title, slug, difficulty, description, code, language, url: window.location.href };
   }
-);
 
-// ---------- GET PROBLEM ----------
-chrome.runtime.onMessage.addListener(
-  (
-    message,
-    sender,
-    sendResponse
-  ) => {
+  function maybeEmit() {
+    const data = scrapeProblem();
+    if (!data.slug || data.slug === lastSentSlug) return;
+    lastSentSlug = data.slug;
 
-    if (
-      message.action ===
-      "get_problem"
-    ) {
-
-      sendResponse(
-        scrapeProblem()
-      );
-    }
+    chrome.runtime.sendMessage({ type: "PROBLEM_DATA", payload: data }, () => {
+      // Suppress "no listener" errors during cold start
+      void chrome.runtime.lastError;
+    });
   }
-);
+
+  // fire on initial load
+  maybeEmit();
+
+  // re-fire when LeetCode does client-side navigation (it's a SPA)
+  const observer = new MutationObserver(() => maybeEmit());
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // also listen if the sidebar explicitly asks for fresh data
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message.type === "GET_PROBLEM") {
+      sendResponse(scrapeProblem());
+    }
+  });
+})();
