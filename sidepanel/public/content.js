@@ -1,54 +1,100 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+import App from "./App";
+import styles from "./index.css?inline";
+
 console.log("Coworker Loaded");
 
 let sidebarOpen = false;
 
-const sidebar =
-document.createElement("iframe");
+// ---------- ROOT ----------
+const root = document.createElement("div");
 
-sidebar.src =
-chrome.runtime.getURL(
-    "index.html"
+root.id = "coworker-root";
+
+document.body.appendChild(root);
+
+// ---------- SHADOW ROOT ----------
+const shadowRoot = root.attachShadow({
+  mode: "open",
+});
+
+// ---------- STYLE ----------
+const styleTag = document.createElement("style");
+
+styleTag.textContent = styles;
+
+shadowRoot.appendChild(styleTag);
+
+// ---------- REACT ROOT ----------
+const reactRoot = document.createElement("div");
+
+reactRoot.id = "react-root";
+
+shadowRoot.appendChild(reactRoot);
+
+// ---------- RENDER APP ----------
+ReactDOM.createRoot(reactRoot).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
 
-sidebar.id = "dsa-help-sidebar";
+// ---------- SCRAPER ----------
+function scrapeProblem() {
+  const title =
+    document.querySelector(
+      "div.text-title-large"
+    )?.innerText;
 
-document.body.appendChild(sidebar);
+  const desc =
+    document.querySelector(
+      '[data-track-load="description_content"]'
+    )?.innerText;
 
+  return {
+    title,
+    desc,
+  };
+}
+
+// ---------- TOGGLE ----------
 chrome.runtime.onMessage.addListener(
-    (message) => {
+  (message) => {
 
-        if (
-            message.action ===
-            "toggle_sidebar"
-        ) {
+    if (
+      message.action ===
+      "toggle_sidebar"
+    ) {
 
-            sidebarOpen =
-            !sidebarOpen;
+      sidebarOpen =
+      !sidebarOpen;
 
-            sidebar.style.right =
-            sidebarOpen
-            ? "0"
-            : "-420px";
-        }
+      reactRoot.style.right =
+      sidebarOpen
+        ? "0"
+        : "-420px";
     }
+  }
 );
 
+// ---------- GET PROBLEM ----------
 chrome.runtime.onMessage.addListener(
-    (message, sender, sendResponse) => {
+  (
+    message,
+    sender,
+    sendResponse
+  ) => {
 
-        if (
-            message.action ===
-            "get_problem"
-        ) {
+    if (
+      message.action ===
+      "get_problem"
+    ) {
 
-            const title =
-            document.querySelector(
-                '[data-cy="question-title"]'
-            )?.innerText;
-
-            sendResponse({
-                title
-            });
-        }
+      sendResponse(
+        scrapeProblem()
+      );
     }
+  }
 );

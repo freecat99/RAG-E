@@ -1,7 +1,7 @@
 import express from 'express'
-import { llmAnswer } from '../controller/searchController';
+import { llmAnswer } from '../controller/searchController.js';
 
 export const searchRouter = express.Router();
 
-searchRouter.get('/', llmAnswer)
+searchRouter.get('/answer', llmAnswer)
 

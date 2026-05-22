@@ -25,6 +25,15 @@
 
 }
 
+.sidebar{
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background: #111;
+}
+
 .homepage{
   background-color: #1c172c;
   color: var(--text-white);
@@ -41,7 +50,6 @@
   gap: .8rem;
   padding: 5px 5px 1px 5px;
   align-items:flex-end;
-  border: 1px solid red;
   background: linear-gradient(to bottom, #4d3d7c, #30235a);
 
   border-bottom: 2px solid var(--text-black);
