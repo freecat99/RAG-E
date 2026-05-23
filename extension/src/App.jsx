@@ -1,14 +1,13 @@
 import React from 'react'
 import Homepage from './pages/Homepage'
-import { useProblem } from './useProblem'
+import { useProblem } from '../../sidepanel/src/useProblem'
 
 function App() {
 
-  const { problem, loading } = useProblem();
 
   return (
     <div className='sidebar'>
-      <Homepage data={{problem:{problem}, loading:{loading}}}/>
+      <Homepage/>
     </div>
   )
 }

@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "version": "1.0.0",
+  "name": "Coworker",
+  "description": "Helps you learn concepts of data structures and algorithms on the go!",
+
+  "action": {
+    "default_title": "Click to open panel"
+  },
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "side_panel": {
+      "default_path": "index.html"
+    },
+    
+  "permissions": [
+        "sidePanel"
+    ],
+    
+  "host_permissions": [
+      "https://leetcode.com/*"
+    ]
+}
