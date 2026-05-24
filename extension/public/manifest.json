@@ -17,9 +17,18 @@
     },
     
   "permissions": [
-        "sidePanel"
+        "sidePanel",
+        "scripting"
     ],
     
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  
   "host_permissions": [
       "https://leetcode.com/*"
     ]

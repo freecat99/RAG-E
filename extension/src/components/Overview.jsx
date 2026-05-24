@@ -1,15 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {MessagesSquare } from 'lucide-react'
 
 function Overview() {
+
+  const [isLoading, setIsLoading] = useState(true);
+
+
   return (
     <div className='midOverview'>
       <ul className='midList'>
         <li className='midListItem'>
             <p className="listItemHeading">Approach</p> <br></br>
-            <div className="midPara">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias officiis quod consectetur, maxime atque officia ex debitis eos blanditiis quae.
-            </div>
+            {
+                isLoading ? (<div className="midPara">loading...</div>):
+                (
+                    <div className="midPara">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias officiis quod consectetur, maxime atque officia ex debitis eos blanditiis quae.
+                    </div>
+                )
+            
+            }
+            
         </li>
         <li className='midListItem'>
             <p className="listItemHeading">Concepts to Learn</p> <br></br>
