@@ -10,12 +10,16 @@ function Homepage() {
 
   const [problemData, setProblemData] = useState(null);
 
+  const [answer, setAnswer] = useState('');
+
   const [isLoading, setIsLoading] = useState(true);
 
-  const getAnswer = (problemData) => {
+  const getAnswer = async(problemData) => {
+
+    setIsLoading(true);
     
-    const response = fetch('http://localhost:1601/api/search/answer', {
-      method: POST,
+    const response = await fetch('http://localhost:1601/api/search/answer', {
+      method: 'POST',
       body: JSON.stringify({
         question: problemData
       }),
@@ -24,7 +28,10 @@ function Homepage() {
       }
     })
 
-    const result = response.json();
+    const result = await response.json();
+    setAnswer(result.result);
+
+    setIsLoading(false);
     console.log(result);
   }
 
@@ -74,8 +81,8 @@ function Homepage() {
 
   }, []);
 
-  useEffect(()=>{
-    getAnswer();
+  useEffect((problemData)=>{
+    getAnswer(problemData)
   }, [problemData])
 
 
@@ -139,7 +146,7 @@ function Homepage() {
             </p>
 
             {activeTab==='overview' &&
-              <Overview problemData={problemData}/>
+              <Overview data={answer} isLoading={isLoading} />
             }
 
             {activeTab==='code' &&

@@ -3,13 +3,13 @@ dotenv.config();
 
 import { pipeline } from "@xenova/transformers";
 import { client } from "../data/qdrantClient.js";
-import { llmGen, llmHyde } from "../util/openRouter.js";
+import { ollamaGen, ollamaHyde } from "../util/openRouter.js";
 
 const COLLECTION_NAME = "algorithms";
 
 //prepares hypothetical answer for better search
 const hyde = async(query) => {
-    let hydeQuery = await llmHyde(query);
+    let hydeQuery = await ollamaHyde(query);
 
     return hydeQuery;
 } 
@@ -17,7 +17,6 @@ const hyde = async(query) => {
 export async function searchVectorDB(query) {
 
     let hydeQuery = await hyde(query);
-    console.log('hyde', hydeQuery)
 
     // load embedding model
     const extractor = await pipeline(
@@ -61,39 +60,24 @@ export async function searchVectorDB(query) {
     return knowledge;
 }
 
-const sanitize = (text) => {
-
-    return text
-        // remove extra spaces
-        .replace(/\s+/g, " ")
-
-        // remove HTML tags
-        .replace(/<[^>]*>/g, "")
-
-        // trim edges
-        .trim()
-
-        // limit length
-        .slice(0, 1000);
-}
 
 export const llmAnswer = async(req, res) => {
 
     try {
 
-        let question = req.body.question;
-        question = sanitize(question);
+        let question = req.body.question;   
         
         //retrieve knowledge from vector DB using HyDE
         const knowledge = await searchVectorDB(question);
 
         //generate answer
-        const answer = await llmGen(question, knowledge);
-        return res.status(200).json(answer);
+        const answer = await ollamaGen(question, knowledge);
+        console.log(answer)
+        res.status(200).json({result:answer});
         
     } catch (error) {
         console.log('error in llmAnswer', error);
-        return res.status(404).json("Trouble generating answer");
+        res.status(404).json({message: "Trouble generating answer"});
     }
 }
 

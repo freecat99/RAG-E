@@ -1,34 +1,35 @@
 import React, { useState } from 'react'
-import {MessagesSquare } from 'lucide-react'
+import { MessagesSquare } from 'lucide-react'
 
-function Overview() {
+function Overview({data, isLoading}) {
 
-  const [isLoading, setIsLoading] = useState(true);
-
+    if(isLoading || !data){
+        return (
+            <h1>Loading...</h1>
+        )
+    }
 
   return (
     <div className='midOverview'>
       <ul className='midList'>
+        
         <li className='midListItem'>
-            <p className="listItemHeading">Approach</p> <br></br>
-            {
-                isLoading ? (<div className="midPara">loading...</div>):
-                (
-                    <div className="midPara">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias officiis quod consectetur, maxime atque officia ex debitis eos blanditiis quae.
-                    </div>
-                )
+                       
             
-            }
+            <p className="listItemHeading">Approach</p> <br></br>
+            <div className="midPara">
+                        {data?.pattern} <br></br> {data?.approach}
+            </div>
             
         </li>
         <li className='midListItem'>
             <p className="listItemHeading">Concepts to Learn</p> <br></br>
             <div className="midConcepts">
-                <div className="midConcept">Monotonic Stack</div>
-                <div className="midConcept">Next Greater Element</div>
-                <div className="midConcept">Array</div>
-                <div className="midConcept">Stack</div>
+                {
+                    data?.concepts?.map((concept, index)=>(
+                        <div className='midConcept' key={index}>{concept}</div>
+                    ))
+                }
             </div>
         </li>
         <li className='midListItem'>
@@ -45,19 +46,17 @@ function Overview() {
             <div className="midComplexity">
                 <div className="midTimeComplexity">
                     <div className="midComplexityHeading">Time</div>
-                    <div className="midComplexityValue">O(n)</div>
-                </div>
-                <div className="midSpaceComplexity">
-                    <div className="midComplexityHeading">Space</div>
-                    <div className="midComplexityValue">O(n)</div>
+                    <div className="midComplexityValue">{data?.complexity}</div>
                 </div>
             </div>
         </li>
       </ul>
+
       <div className="midAI">
         <button className="askAi"> <MessagesSquare/> Ask AI</button>
       </div>
     </div>
+    
   )
 }
 

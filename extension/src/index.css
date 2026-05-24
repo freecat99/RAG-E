@@ -96,6 +96,7 @@
   padding: 15px;
   border-radius: 20px;
   background-color: #f7f7f715;
+  overflow-y: scroll;
 }
 
 .midQuestions li::marker{
