@@ -18,7 +18,7 @@ function scrapeProblem() {
     };
 }
 
-// ---------- INITIAL REQUEST ----------
+//initial request
 chrome.runtime.onMessage.addListener(
     (message, sender, sendResponse) => {
 
@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener(
     }
 });
 
-// ---------- URL CHANGE DETECTION ----------
+//detect url change
 let lastUrl = location.href;
 
 const observer =

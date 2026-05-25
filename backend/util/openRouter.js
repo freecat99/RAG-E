@@ -8,13 +8,13 @@ const client = new OpenRouter({
   apiKey: process.env.OpenRouterAPI
 });
 
-export const hyde = async(query) => {
+export const llmhyde = async(query) => {
 
     try {
 
         const completion = await client.chat.send({
         chatRequest:{
-            model: 'arcee-ai/trinity-large-thinking:free',
+            model: 'baidu/cobuddy:free',
             messages: [
               {
                 role: 'user',
@@ -37,13 +37,13 @@ export const hyde = async(query) => {
     }   
 }
 
-export const llmGen = async(question, retrieval) => {
+export const llmgen = async(question, retrieval) => {
 
     try {
 
         const completion = await client.chat.send({
         chatRequest:{
-            model: 'arcee-ai/trinity-large-thinking:free',
+            model: 'baidu/cobuddy:free',
             messages: [
                 {
                     role: 'system',
@@ -66,7 +66,8 @@ export const llmGen = async(question, retrieval) => {
                                     "pattern": "",
                                     "approach": "",
                                     "complexity": "",
-                                    "concepts": []
+                                    "concepts": [],
+                                    "similarQuestions":[]
                                     }`,
                 },
                 ],
@@ -75,7 +76,7 @@ export const llmGen = async(question, retrieval) => {
         return completion.choices[0].message.content;
     
     } catch (error) {
-        console.log('error in llmGen', error);
+        console.log('error in ollamaGen', error);
         return;
     }   
 }
@@ -93,12 +94,20 @@ export const ollamaHyde = async(query) => {
                 role: 'user',
                 content: `Given DSA problem: ${query}
                 
-                Return ONLY:
-                - algorithmic patterns
-                - data structures
-                - important techniques
-                
-                Under 25 words.`
+                Rules:
+                    - Mention ONLY directly relevant concepts
+                    - Never invent advanced algorithms
+                    - Use short tags only
+                    - No explanations
+                    - No sentences
+                    - Comma separated only
+
+                    Examples:
+                    hashmap, counting
+                    math, simulation
+                    greedy, sorting
+
+                    Maximum 6 tags.`
             }]
         });
         
@@ -141,26 +150,24 @@ export const ollamaGen = async(question, retrieval) => {
                             "pattern": "",
                             "approach": "",
                             "complexity": "",
-                            "concepts": []
+                            "concepts": [],
+                            "questions":[]
                             }`
             }]
         });
-
-        return extractJSON(response.message.content); // ✅ parse here, return object
+        console.log("json", response)
+        return extractJSON(response.message.content); 
 
     } catch (error) {
         console.log('error in ollamaGen', error);
         return null;
     }   
 }
-
-// ── helper ──────────────────────────────────────────────
 function extractJSON(raw) {
-    // Strip ```json ... ``` or ``` ... ``` fences
+
     const fenceMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
     let text = fenceMatch ? fenceMatch[1] : raw;
 
-    // Isolate the first { ... } block (ignores any stray leading/trailing text)
     const start = text.indexOf('{');
     const end   = text.lastIndexOf('}');
     if (start === -1 || end === -1) throw new Error('No JSON object found in response');

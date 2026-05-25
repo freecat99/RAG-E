@@ -16,7 +16,7 @@ const hyde = async(query) => {
 
 export async function searchVectorDB(query) {
 
-    let hydeQuery = await hyde(query);
+    //let hydeQuery = await hyde(query);
 
     // load embedding model
     const extractor = await pipeline(
@@ -25,7 +25,7 @@ export async function searchVectorDB(query) {
     );
 
     // Some recent models that you can find in MTEB require prepending the text with an instruction to work better for retrieval. For example, if you use BAAI/bge-large-en-v1.5, you should prefix your query with the following instruction: “Represent this sentence for searching relevant passages:”
-    const formattedQuery = "Represent this sentence for searching relevant passages: " + hydeQuery;
+    const formattedQuery = "Represent this sentence for searching relevant passages: " + query;
 
     // generate query embedding
     const output = await extractor(
@@ -71,9 +71,19 @@ export const llmAnswer = async(req, res) => {
         const knowledge = await searchVectorDB(question);
 
         //generate answer
-        const answer = await ollamaGen(question, knowledge);
-        console.log(answer)
-        res.status(200).json({result:answer});
+       const answer = await ollamaGen(question, knowledge);
+
+        if (!answer) {
+            return res.status(500).json({
+                message: "Failed generating answer"
+            });
+        }
+
+        console.log("answer",answer);
+
+        res.status(200).json({
+            result: answer
+        });
         
     } catch (error) {
         console.log('error in llmAnswer', error);

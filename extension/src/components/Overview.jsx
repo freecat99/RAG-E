@@ -9,6 +9,8 @@ function Overview({data, isLoading}) {
         )
     }
 
+    console.log("data", data)
+
   return (
     <div className='midOverview'>
       <ul className='midList'>
@@ -36,8 +38,13 @@ function Overview({data, isLoading}) {
             <p className="listItemHeading">Similar Questions</p> <br></br>
             <div className="midQuestions">
                 <ul>
-                    <li> Online Stock Spin</li>
-                    <li> Max Element After</li>
+                    {
+                        data?.similarQuestions?.map((concept, index)=>(
+                            <li key={index}>
+                                {concept}
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
         </li>

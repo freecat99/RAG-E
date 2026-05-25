@@ -25,6 +25,13 @@
 
 }
 
+html{
+  overflow: scroll;
+  scrollbar-color: var(--theme-purple) var(--text-black);
+  scrollbar-width: thin;
+}
+
+
 .sidebar{
   position: fixed;
   top: 0;
@@ -96,7 +103,7 @@
   padding: 15px;
   border-radius: 20px;
   background-color: #f7f7f715;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .midQuestions li::marker{

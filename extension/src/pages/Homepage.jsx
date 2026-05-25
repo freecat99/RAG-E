@@ -141,10 +141,6 @@ function Homepage() {
               {problemData?.title}
             </h2>
 
-            <p>
-              {problemData?.description}
-            </p>
-
             {activeTab==='overview' &&
               <Overview data={answer} isLoading={isLoading} />
             }
